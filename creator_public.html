@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}{{ creator.display_name }} — Smell Panties{% endblock %}
+{% block content %}
+<section class="profile-shell launch-profile">
+  <div class="profile-cover" {% if creator.cover_path %}style="background-image:url('{{ url_for('public_media', relpath=creator.cover_path) }}')"{% endif %}>
+    <div class="cover-overlay"></div>
+  </div>
+  <div class="profile-main-card">
+    <div class="profile-avatar large-avatar">{% if creator.avatar_path %}<img src="{{ url_for('public_media', relpath=creator.avatar_path) }}" alt="{{ creator.display_name }}">{% else %}{{ creator.avatar_text }}{% endif %}</div>
+    <div class="profile-copy"><div class="eyebrow">18+ CREATOR</div><h1>{{ creator.display_name }}</h1><div class="handle">{{ creator.handle }} · {{ creator.location }}</div><p>{{ creator.bio }}</p>
+      <div class="profile-stats"><div><strong>{{ subscriber_count }}</strong><span>subscribers</span></div><div><strong>{% if rank %}#{{ rank }}{% else %}—{% endif %}</strong><span>token rank</span></div><div><strong>${{ creator.token_symbol }}</strong><span>creator token</span></div></div>
+    </div>
+    <div class="profile-cta-stack">
+      {% if can_manage_creator(creator) %}
+        <a class="button" href="{{ url_for('creator_dashboard', slug=creator.slug) }}">Open studio</a>
+      {% elif auth_user and auth_user.role == 'fan' and subscription and subscription.status == 'active' %}
+        <a class="button" href="{{ url_for('creator_private', slug=creator.slug) }}">Enter private room</a>
+        <a class="button secondary" href="{{ url_for('fan_creator_messages', slug=creator.slug) }}">Message {{ creator.display_name }}</a>
+      {% elif auth_user and auth_user.role == 'fan' %}
+        <a class="button" href="{{ url_for('subscribe_creator', slug=creator.slug) }}">Subscribe · ${{ '%.2f'|format(creator.subscription_price) }}/mo</a>
+      {% else %}
+        <a class="button" href="{{ url_for('signup', next=url_for('subscribe_creator', slug=creator.slug)) }}">Create subscriber account</a>
+        <a class="button secondary" href="{{ url_for('login', next=url_for('subscribe_creator', slug=creator.slug)) }}">Log in to subscribe</a>
+      {% endif %}
+    </div>
+  </div>
+
+  <section class="token-hero-card launch-token-card">
+    <div><div class="eyebrow">CREATOR TOKEN</div><h2>{{ creator.token_name }} <span>${{ creator.token_symbol }}</span></h2><p>Spend 1 SP‑Nude on this creator to mint 1 ${{ creator.token_symbol }} utility token. One creator token can be submitted as one eligible creator-drop redemption request.</p></div>
+    <div class="heat-box"><strong>{{ '{:,}'.format(creator.sp_nudes_spent) }}</strong><span>SP‑Nudes spent here</span><div class="heat-meter"><i style="width:{{ [100, (creator.sp_nudes_spent / 100)|int]|min }}%"></i></div></div>
+    {% if auth_user and auth_user.role == 'fan' %}<div class="token-actions"><small>Your wallet: <b>{{ auth_user.sp_nudes_balance }} SP‑Nudes</b> · <b>{{ token_balance }} ${{ creator.token_symbol }}</b></small><div><form method="post" action="{{ url_for('token_spend', slug=creator.slug) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button class="button compact" type="submit">Spend 1 SP‑Nude</button></form>{% if token_balance > 0 %}<form method="post" action="{{ url_for('token_redeem', slug=creator.slug) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button class="button secondary compact" type="submit">Redeem 1 ${{ creator.token_symbol }}</button></form>{% endif %}</div></div>{% else %}<a class="button compact" href="{{ url_for('signup', next=url_for('creator_public', slug=creator.slug)) }}">Create fan wallet</a>{% endif %}
+  </section>
+
+  {% if streams %}
+  <section class="creator-storefront"><div class="storefront-head"><div><div class="eyebrow">LIVE NOW / UPCOMING</div><h2>Live rooms</h2></div></div>
+    <div class="live-list-grid">{% for stream in streams %}<a class="live-list-card" href="{{ url_for('stream_room', stream_id=stream.id) }}"><span class="live-dot {{ stream.status }}"></span><div><strong>{{ stream.title }}</strong><small>{{ stream.audience|upper }} · {{ stream.status|upper }}{% if stream.price_per_minute %} · ${{ '%.2f'|format(stream.price_per_minute) }}/min{% endif %}</small></div></a>{% endfor %}</div>
+  </section>
+  {% endif %}
+
+  <section class="creator-storefront" id="shop">
+    <div class="storefront-head"><div><div class="eyebrow">1/1 BOUTIQUE</div><h2>Unique drops</h2><p>Each item is a single edition. Sold items are permanently retired from availability.</p></div><div class="storefront-trust"><span>PLATFORM FEE</span><strong>{{ '%.0f'|format(creator.platform_fee_percent) }}%</strong><small>Creator account rate</small></div></div>
+    <div class="storefront-grid">
+      {% for p in products %}
+      <article class="product-card storefront-product {{ p.status }}">
+        <div class="product-art {% if p.type == 'physical' %}product-physical{% endif %}">{% if p.image_path %}<img src="{{ url_for('public_media', relpath=p.image_path) }}" alt="{{ p.title }}">{% else %}<span class="drop-watermark">1/1</span>{% endif %}<span class="product-type-pill">{{ p.type|upper }}</span></div>
+        <div class="product-copy"><div><span class="edition">{{ p.edition }}</span><h3>{{ p.title }}</h3><p>{{ p.description }}</p></div><div class="product-bottom"><strong>${{ '%.2f'|format(p.price) }} {{ p.currency }}</strong>
+          {% if p.status == 'available' %}
+            {% if auth_user and auth_user.role == 'fan' %}<form method="post" action="{{ url_for('checkout', slug=creator.slug, product_id=p.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button class="button compact product-buy" type="submit">Claim / checkout</button></form>{% else %}<a class="button compact" href="{{ url_for('signup', next=url_for('creator_public', slug=creator.slug) + '#shop') }}">Create account to buy</a>{% endif %}
+          {% else %}<span class="status {{ p.status }}">{{ p.status|upper }}</span>{% endif %}
+        </div>{% if p.delivery_note %}<div class="fulfillment-note"><b>FULFILLMENT</b><span>{{ p.delivery_note }}</span></div>{% endif %}</div>
+      </article>
+      {% else %}<div class="empty-store"><div><strong>No products live yet.</strong><p>{{ creator.display_name }} has not published a boutique drop yet.</p></div></div>{% endfor %}
+    </div>
+  </section>
+  <div class="profile-report"><a href="{{ url_for('report_content', creator=creator.slug) }}">Report this creator or content</a></div>
+</section>
+{% endblock %}

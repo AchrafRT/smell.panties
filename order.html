@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Order {{ order.order_id }} — Smell Panties{% endblock %}
+{% block content %}
+<section class="checkout-shell"><div class="checkout-card order-card"><div class="eyebrow">BOUTIQUE ORDER</div><h1>{{ order.product_title }}</h1><p>Creator: <a href="{{ url_for('creator_public', slug=order.slug) }}">{{ order.creator_name }}</a></p><div class="order-summary"><div><span>Order</span><strong>{{ order.order_id }}</strong></div><div><span>Amount</span><strong>${{ '%.2f'|format(order.amount) }} {{ order.currency }}</strong></div><div><span>Status</span><strong>{{ order.status|replace('_',' ')|upper }}</strong></div></div>
+  {% if invoice %}<a class="button wide" href="{{ url_for('billing.invoice_page', iid=invoice.id) }}">Continue to secure checkout</a>{% endif %}
+  {% if shipping %}<div class="order-summary"><strong>Shipping address</strong>{% for key,value in shipping.items() %}<div><span>{{ key|replace('_',' ')|title }}</span><strong>{{ value }}</strong></div>{% endfor %}</div>{% endif %}
+  {% if order.status == 'paid' and order.delivery_path %}<a class="button wide" href="{{ url_for('protected_media', relpath=order.delivery_path) }}">Download purchased file</a>{% elif order.status == 'paid' %}<p class="billing-note">Payment is confirmed. Follow the creator's fulfillment note: {{ order.delivery_note or 'Creator fulfillment required.' }}</p>{% endif %}
+  {% if order.status == 'pending_payment' %}<form method="post" action="{{ url_for('cancel_order', order_id=order.order_id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button class="button secondary wide" type="submit">Cancel pending order</button></form>{% endif %}
+  {% if is_admin and order.status != 'paid' and order.status == 'pending_payment' %}<form method="post" action="{{ url_for('admin_mark_order_paid', order_id=order.order_id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button class="button wide" type="submit">Admin: confirm payment & fulfill</button></form>{% endif %}
+</div></section>
+{% endblock %}

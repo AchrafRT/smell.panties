@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Subscribe to {{ creator.display_name }} — Smell Panties{% endblock %}
+{% block content %}
+<section class="checkout-shell"><div class="checkout-card">
+  <div class="mini-avatar large">{% if creator.avatar_path %}<img src="{{ url_for('public_media', relpath=creator.avatar_path) }}" alt="">{% else %}{{ creator.avatar_text }}{% endif %}</div>
+  <div class="eyebrow">PRIVATE CLUB</div><h1>Subscribe to {{ creator.display_name }}</h1>
+  <div class="subscription-price"><strong>${{ '%.2f'|format(creator.subscription_price) }}</strong><span>{{ creator.subscription_currency }} / 30 days</span></div>
+  <ul class="benefit-list"><li>Private subscriber feed</li><li>Direct creator messaging</li><li>Subscriber live-room access</li><li>Early access to unique boutique drops</li></ul>
+  {% if subscription and subscription.status == 'active' %}<a class="button wide" href="{{ url_for('creator_private', slug=creator.slug) }}">Enter private room</a>
+  {% else %}<form method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button class="button wide" type="submit">{% if billing_mode == 'launch_free' %}Activate launch subscription{% else %}Create subscription{% endif %}</button></form>{% endif %}
+  {% if billing_mode == 'launch_free' %}<p class="billing-note">Payment processing is intentionally not connected in this build. Launch subscriptions activate without charge so the rest of the platform is fully usable.</p>{% elif billing_mode == 'manual' %}<p class="billing-note">Your subscription will remain pending until an administrator confirms payment.</p>{% else %}<p class="billing-note">Pay once for 30 days of access. Renewal requires another payment; there are no automatic charges.</p>{% endif %}
+</div></section>
+{% endblock %}

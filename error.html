@@ -1,0 +1,3 @@
+{% extends "base.html" %}
+{% block title %}{{ code }} — Smell Panties{% endblock %}
+{% block content %}<section class="error-shell"><div class="error-code">{{ code }}</div><h1>That room is unavailable.</h1><p>{{ description }}</p><div class="hero-actions"><a class="button" href="{{ url_for('brand_profile') }}">Return home</a></div></section>{% endblock %}

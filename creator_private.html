@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}{{ creator.display_name }} Private Room — Smell Panties{% endblock %}
+{% block content %}
+<section class="dashboard-shell private-room-shell">
+  <div class="dashboard-title"><div><div class="eyebrow">PRIVATE SUBSCRIBER ROOM</div><h1>{{ creator.display_name }}</h1><p>Subscriber-only posts, direct messaging and live access.</p></div><div class="hero-actions">{% if auth_user and auth_user.role == 'fan' %}<a class="button" href="{{ url_for('fan_creator_messages', slug=creator.slug) }}">Message creator</a>{% endif %}<a class="button secondary" href="{{ url_for('creator_public', slug=creator.slug) }}">Public profile</a></div></div>
+  {% if streams %}<section class="panel"><div class="eyebrow">LIVE ROOMS</div><h2>Available sessions</h2><div class="live-list-grid">{% for s in streams %}<a class="live-list-card" href="{{ url_for('stream_room', stream_id=s.id) }}"><span class="live-dot {{ s.status }}"></span><div><strong>{{ s.title }}</strong><small>{{ s.audience|upper }} · {{ s.status|upper }}</small></div></a>{% endfor %}</div></section>{% endif %}
+  <div class="private-feed">{% for post in posts %}<article class="private-post panel"><div class="post-meta"><span>SUBSCRIBER DROP</span><small>{{ post.created_at[:16]|replace('T',' ') }}</small></div><h2>{{ post.title }}</h2><p>{{ post.body }}</p>{% if post.media_path %}{% if post.media_kind == 'image' %}<img class="private-media" src="{{ url_for('protected_media', relpath=post.media_path) }}" alt="Private post media">{% elif post.media_kind == 'video' %}<video class="private-media" controls playsinline src="{{ url_for('protected_media', relpath=post.media_path) }}"></video>{% else %}<a class="button secondary" href="{{ url_for('protected_media', relpath=post.media_path) }}">Open attached file</a>{% endif %}{% endif %}</article>{% else %}<section class="panel"><p class="muted">No private posts yet.</p></section>{% endfor %}</div>
+</section>
+{% endblock %}

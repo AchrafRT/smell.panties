@@ -1,0 +1,25 @@
+{
+  "python_compile": "pass",
+  "templates_parsed": 20,
+  "render_configuration": "pass",
+  "javascript_syntax": "pass",
+  "existing_database_migration": "pass; private copy only",
+  "sqlite_backup": "pass; private temporary sample",
+  "tests": {
+    "passed": 32,
+    "failed": 0,
+    "providers": "mocked; no live transactions"
+  },
+  "original_brand_images": "byte-identical",
+  "browser_checks": [
+    "Original storefront desktop appearance",
+    "Phone viewport 390x844; overflow fixed; document width equals viewport",
+    "Owner sign-in and dashboard"
+  ],
+  "not_verified": [
+    "Live Render deployment",
+    "Real provider credentials, live payments, refunds or merchant eligibility",
+    "Cross-network WebRTC/TURN calls",
+    "External email and identity verification"
+  ]
+}

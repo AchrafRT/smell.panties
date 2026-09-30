@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Creator Onboarding — Smell Panties{% endblock %}
+{% block content %}
+<section class="creator-onboard-shell">
+  <div class="onboard-copy"><div class="eyebrow">CREATOR ONBOARDING</div><h1>Open your studio.</h1><p>Your account creates a public profile, private subscriber room, boutique, creator inbox, live-room tools, a unique token identity and a @smellpanties.com internal business identity.</p><div class="founder-callout"><strong>First {{ brand.founder_limit or 1000 }} creators</strong><span>Founder fee metadata is locked to the account at onboarding.</span></div></div>
+  <form method="post" class="panel onboard-form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <div class="form-grid">
+      <label><span>Creator name</span><input name="display_name" maxlength="80" required></label>
+      <label><span>Login email</span><input type="email" name="email" autocomplete="email" required></label>
+      <label><span>Password</span><input type="password" name="password" minlength="8" autocomplete="new-password" required></label>
+      <label><span>Confirm password</span><input type="password" name="password_confirm" minlength="8" autocomplete="new-password" required></label>
+      <label><span>Creator token name</span><input name="token_name" maxlength="40" placeholder="Noir Key" required></label>
+      <label><span>Business email handle</span><div class="suffix-input"><input name="email_handle" maxlength="40" placeholder="luna.noir"><b>@smellpanties.com</b></div></label>
+      <label class="check-row full"><input type="checkbox" name="adult_confirm" value="yes" required><span>I confirm I am 18+ and I have the legal right and consent to publish everything I upload.</span></label>
+      <button class="button wide full" type="submit">Create creator account</button>
+    </div>
+  </form>
+</section>
+{% endblock %}

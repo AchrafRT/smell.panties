@@ -1,0 +1,415 @@
+{
+  "brand": {
+    "name": "Smell Panties",
+    "handle": "@smellpanties",
+    "tagline": "More Than a Scent",
+    "bio": "A premium direct-to-fan platform for certified unique digital and physical creator products, private access, live experiences and creator-owned audiences.",
+    "fee_percent": 9,
+    "founder_limit": 1000,
+    "founder_claim": "9% flat platform fee per transaction, including payment processing, locked for life for the first 1,000 creators while their subscription remains continuously renewed.",
+    "custom_domain_fee_yearly": "TBD",
+    "custom_domain_claim": "Creators can operate on their own domain and retain ownership of their subscriber base for one flat yearly domain fee.",
+    "platform_token": {
+      "name": "SP-Nudes",
+      "symbol": "SPNUDE",
+      "type": "closed-loop utility credit",
+      "rule": "Fans spend SP-Nudes on creator profiles. Every SP-Nude spent mints one unit of that creator’s token in the MVP demo wallet.",
+      "disclaimer": "MVP utility economy only: non-transferable, not an investment asset, no cash-market pricing."
+    },
+    "creator_token_rule": "Each creator chooses a unique token name during onboarding. One creator token represents one eligible nude-photo redemption/drop in the MVP economy.",
+    "leaderboard_rule": "Top 9 creator tokens are ranked by cumulative SP-Nudes spent on that creator profile.",
+    "email_domain": "smellpanties.com",
+    "age_gate": "18+ creators and customers only."
+  },
+  "creators": [
+    {
+      "id": "cr_001",
+      "slug": "luna-noir",
+      "display_name": "Luna Noir",
+      "handle": "@lunanoir",
+      "avatar": "LN",
+      "bio": "Limited collector drops, private access and live sessions. Direct audience, no algorithm required.",
+      "location": "Montréal",
+      "subscriber_count": 482,
+      "custom_domain": "lunanoir.com",
+      "business_email": "luna-noir@smellpanties.com",
+      "token": {
+        "name": "Noir Key",
+        "symbol": "NOIR",
+        "sp_nudes_spent": 9284,
+        "tokens_minted": 9284,
+        "redemption": "1 token = 1 eligible nude photo drop"
+      },
+      "products": [
+        {
+          "id": "prd_001",
+          "title": "Midnight Letter #001",
+          "description": "One-of-one signed physical collector letter with digital certificate.",
+          "type": "physical",
+          "price": 180,
+          "currency": "USD",
+          "status": "available",
+          "edition": "1/1"
+        },
+        {
+          "id": "prd_002",
+          "title": "Private Voice Note #014",
+          "description": "One-of-one downloadable audio drop, released once and permanently retired after sale.",
+          "type": "digital",
+          "price": 72,
+          "currency": "USD",
+          "status": "available",
+          "edition": "1/1"
+        },
+        {
+          "id": "prd_003",
+          "title": "Polaroid Drop #008",
+          "description": "Single physical collector print with matching proof record.",
+          "type": "physical",
+          "price": 240,
+          "currency": "USD",
+          "status": "sold",
+          "edition": "1/1"
+        }
+      ],
+      "private_posts": [
+        {
+          "title": "Private room",
+          "body": "Subscriber-only drops, direct updates and live-session invitations appear here."
+        },
+        {
+          "title": "Next unlock",
+          "body": "Collectors receive first access to the next certified one-of-one release."
+        }
+      ]
+    },
+    {
+      "id": "cr_002",
+      "slug": "mia-rose",
+      "display_name": "Mia Rose",
+      "handle": "@miarose",
+      "avatar": "MR",
+      "bio": "Limited collector drops, private access and live sessions. Direct audience, no algorithm required.",
+      "location": "Toronto",
+      "subscriber_count": 391,
+      "custom_domain": "",
+      "business_email": "mia-rose@smellpanties.com",
+      "token": {
+        "name": "Rosepass",
+        "symbol": "ROSE",
+        "sp_nudes_spent": 7842,
+        "tokens_minted": 7842,
+        "redemption": "1 token = 1 eligible nude photo drop"
+      },
+      "products": [
+        {
+          "id": "prd_004",
+          "title": "Collector Card #001",
+          "description": "One unique signed card and corresponding digital proof.",
+          "type": "physical",
+          "price": 95,
+          "currency": "USD",
+          "status": "available",
+          "edition": "1/1"
+        }
+      ],
+      "private_posts": [
+        {
+          "title": "Private room",
+          "body": "Subscriber-only drops, direct updates and live-session invitations appear here."
+        },
+        {
+          "title": "Next unlock",
+          "body": "Collectors receive first access to the next certified one-of-one release."
+        }
+      ]
+    },
+    {
+      "id": "cr_003",
+      "slug": "vera-vale",
+      "display_name": "Vera Vale",
+      "handle": "@veravale",
+      "avatar": "VV",
+      "bio": "Limited collector drops, private access and live sessions. Direct audience, no algorithm required.",
+      "location": "New York",
+      "subscriber_count": 352,
+      "custom_domain": "veravale.com",
+      "business_email": "vera-vale@smellpanties.com",
+      "token": {
+        "name": "Velvet Vale",
+        "symbol": "VALE",
+        "sp_nudes_spent": 6910,
+        "tokens_minted": 6910,
+        "redemption": "1 token = 1 eligible nude photo drop"
+      },
+      "products": [
+        {
+          "id": "prd_003a",
+          "title": "Vera Private Drop #001",
+          "description": "One-of-one digital collector drop with fulfillment proof.",
+          "type": "digital",
+          "price": 126,
+          "currency": "USD",
+          "status": "available",
+          "edition": "1/1"
+        }
+      ],
+      "private_posts": [
+        {
+          "title": "Private room",
+          "body": "Subscriber-only drops, direct updates and live-session invitations appear here."
+        },
+        {
+          "title": "Next unlock",
+          "body": "Collectors receive first access to the next certified one-of-one release."
+        }
+      ]
+    },
+    {
+      "id": "cr_004",
+      "slug": "nina-saint",
+      "display_name": "Nina Saint",
+      "handle": "@ninasaint",
+      "avatar": "NS",
+      "bio": "Limited collector drops, private access and live sessions. Direct audience, no algorithm required.",
+      "location": "Miami",
+      "subscriber_count": 319,
+      "custom_domain": "ninasaint.com",
+      "business_email": "nina-saint@smellpanties.com",
+      "token": {
+        "name": "Saint Coin",
+        "symbol": "SAINT",
+        "sp_nudes_spent": 6044,
+        "tokens_minted": 6044,
+        "redemption": "1 token = 1 eligible nude photo drop"
+      },
+      "products": [
+        {
+          "id": "prd_004a",
+          "title": "Nina Private Drop #001",
+          "description": "One-of-one digital collector drop with fulfillment proof.",
+          "type": "digital",
+          "price": 135,
+          "currency": "USD",
+          "status": "available",
+          "edition": "1/1"
+        }
+      ],
+      "private_posts": [
+        {
+          "title": "Private room",
+          "body": "Subscriber-only drops, direct updates and live-session invitations appear here."
+        },
+        {
+          "title": "Next unlock",
+          "body": "Collectors receive first access to the next certified one-of-one release."
+        }
+      ]
+    },
+    {
+      "id": "cr_005",
+      "slug": "ivy-lux",
+      "display_name": "Ivy Lux",
+      "handle": "@ivylux",
+      "avatar": "IL",
+      "bio": "Limited collector drops, private access and live sessions. Direct audience, no algorithm required.",
+      "location": "Los Angeles",
+      "subscriber_count": 286,
+      "custom_domain": "",
+      "business_email": "ivy-lux@smellpanties.com",
+      "token": {
+        "name": "Lux Drop",
+        "symbol": "IVYLUX",
+        "sp_nudes_spent": 5530,
+        "tokens_minted": 5530,
+        "redemption": "1 token = 1 eligible nude photo drop"
+      },
+      "products": [
+        {
+          "id": "prd_005a",
+          "title": "Ivy Private Drop #001",
+          "description": "One-of-one digital collector drop with fulfillment proof.",
+          "type": "digital",
+          "price": 144,
+          "currency": "USD",
+          "status": "available",
+          "edition": "1/1"
+        }
+      ],
+      "private_posts": [
+        {
+          "title": "Private room",
+          "body": "Subscriber-only drops, direct updates and live-session invitations appear here."
+        },
+        {
+          "title": "Next unlock",
+          "body": "Collectors receive first access to the next certified one-of-one release."
+        }
+      ]
+    },
+    {
+      "id": "cr_006",
+      "slug": "sofia-voss",
+      "display_name": "Sofia Voss",
+      "handle": "@sofiavoss",
+      "avatar": "SV",
+      "bio": "Limited collector drops, private access and live sessions. Direct audience, no algorithm required.",
+      "location": "London",
+      "subscriber_count": 244,
+      "custom_domain": "",
+      "business_email": "sofia-voss@smellpanties.com",
+      "token": {
+        "name": "Voss Vault",
+        "symbol": "VOSS",
+        "sp_nudes_spent": 4972,
+        "tokens_minted": 4972,
+        "redemption": "1 token = 1 eligible nude photo drop"
+      },
+      "products": [
+        {
+          "id": "prd_006a",
+          "title": "Sofia Private Drop #001",
+          "description": "One-of-one digital collector drop with fulfillment proof.",
+          "type": "digital",
+          "price": 153,
+          "currency": "USD",
+          "status": "available",
+          "edition": "1/1"
+        }
+      ],
+      "private_posts": [
+        {
+          "title": "Private room",
+          "body": "Subscriber-only drops, direct updates and live-session invitations appear here."
+        },
+        {
+          "title": "Next unlock",
+          "body": "Collectors receive first access to the next certified one-of-one release."
+        }
+      ]
+    },
+    {
+      "id": "cr_007",
+      "slug": "eva-bloom",
+      "display_name": "Eva Bloom",
+      "handle": "@evabloom",
+      "avatar": "EB",
+      "bio": "Limited collector drops, private access and live sessions. Direct audience, no algorithm required.",
+      "location": "Paris",
+      "subscriber_count": 230,
+      "custom_domain": "",
+      "business_email": "eva-bloom@smellpanties.com",
+      "token": {
+        "name": "Bloom Key",
+        "symbol": "BLOOM",
+        "sp_nudes_spent": 4411,
+        "tokens_minted": 4411,
+        "redemption": "1 token = 1 eligible nude photo drop"
+      },
+      "products": [
+        {
+          "id": "prd_007a",
+          "title": "Eva Private Drop #001",
+          "description": "One-of-one digital collector drop with fulfillment proof.",
+          "type": "digital",
+          "price": 162,
+          "currency": "USD",
+          "status": "available",
+          "edition": "1/1"
+        }
+      ],
+      "private_posts": [
+        {
+          "title": "Private room",
+          "body": "Subscriber-only drops, direct updates and live-session invitations appear here."
+        },
+        {
+          "title": "Next unlock",
+          "body": "Collectors receive first access to the next certified one-of-one release."
+        }
+      ]
+    },
+    {
+      "id": "cr_008",
+      "slug": "aria-night",
+      "display_name": "Aria Night",
+      "handle": "@arianight",
+      "avatar": "AN",
+      "bio": "Limited collector drops, private access and live sessions. Direct audience, no algorithm required.",
+      "location": "Berlin",
+      "subscriber_count": 215,
+      "custom_domain": "",
+      "business_email": "aria-night@smellpanties.com",
+      "token": {
+        "name": "Night Key",
+        "symbol": "ARIA",
+        "sp_nudes_spent": 3920,
+        "tokens_minted": 3920,
+        "redemption": "1 token = 1 eligible nude photo drop"
+      },
+      "products": [
+        {
+          "id": "prd_008a",
+          "title": "Aria Private Drop #001",
+          "description": "One-of-one digital collector drop with fulfillment proof.",
+          "type": "digital",
+          "price": 171,
+          "currency": "USD",
+          "status": "available",
+          "edition": "1/1"
+        }
+      ],
+      "private_posts": [
+        {
+          "title": "Private room",
+          "body": "Subscriber-only drops, direct updates and live-session invitations appear here."
+        },
+        {
+          "title": "Next unlock",
+          "body": "Collectors receive first access to the next certified one-of-one release."
+        }
+      ]
+    },
+    {
+      "id": "cr_009",
+      "slug": "cleo-muse",
+      "display_name": "Cleo Muse",
+      "handle": "@cleomuse",
+      "avatar": "CM",
+      "bio": "Limited collector drops, private access and live sessions. Direct audience, no algorithm required.",
+      "location": "Barcelona",
+      "subscriber_count": 198,
+      "custom_domain": "",
+      "business_email": "cleo-muse@smellpanties.com",
+      "token": {
+        "name": "Muse Mark",
+        "symbol": "MUSE",
+        "sp_nudes_spent": 3518,
+        "tokens_minted": 3518,
+        "redemption": "1 token = 1 eligible nude photo drop"
+      },
+      "products": [
+        {
+          "id": "prd_009a",
+          "title": "Cleo Private Drop #001",
+          "description": "One-of-one digital collector drop with fulfillment proof.",
+          "type": "digital",
+          "price": 180,
+          "currency": "USD",
+          "status": "available",
+          "edition": "1/1"
+        }
+      ],
+      "private_posts": [
+        {
+          "title": "Private room",
+          "body": "Subscriber-only drops, direct updates and live-session invitations appear here."
+        },
+        {
+          "title": "Next unlock",
+          "body": "Collectors receive first access to the next certified one-of-one release."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Smell Panties — More Than a Scent{% endblock %}
+{% block content %}
+<section class="launch-hero">
+  <div class="hero-copy">
+    <div class="eyebrow">DIRECT-TO-FAN · 18+</div>
+    <h1>More than a scent.<br><em>A creator economy.</em></h1>
+    <p>Subscribe directly to creators, enter private rooms, message one-to-one, collect unique drops and join live experiences without an algorithm standing in the middle.</p>
+    <div class="hero-actions">
+      <a class="button" href="#creators">Explore creators</a>
+      <a class="button secondary" href="{{ url_for('creator_signup') }}">Become a creator</a>
+    </div>
+    <div class="hero-proof"><span>18+ gated</span><span>Creator-owned storefronts</span><span>Private subscriber access</span></div>
+  </div>
+  <div class="hero-logo-stage">
+    <div class="logo-halo"></div>
+    <img src="{{ url_for('static', filename='sp_logo.png') }}" alt="Smell Panties logo">
+  </div>
+</section>
+
+<section class="section-shell" id="top9">
+  <div class="section-heading"><div><div class="eyebrow">LIVE LEADERBOARD</div><h2>Top 9 creator tokens</h2></div><p>Ranked by cumulative SP‑Nudes spent on each creator profile.</p></div>
+  <div class="ranking-grid launch-ranking">
+    {% for creator in rankings %}
+    <a class="rank-card" href="{{ url_for('creator_public', slug=creator.slug) }}">
+      <span class="rank-number">#{{ loop.index }}</span>
+      <div class="mini-avatar">{% if creator.avatar_path %}<img src="{{ url_for('public_media', relpath=creator.avatar_path) }}" alt="">{% else %}{{ creator.avatar_text }}{% endif %}</div>
+      <div><strong>{{ creator.display_name }}</strong><small>${{ creator.token_symbol }} · {{ '{:,}'.format(creator.sp_nudes_spent) }} SP‑Nudes</small></div>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="section-shell" id="creators">
+  <div class="section-heading"><div><div class="eyebrow">CREATOR DIRECTORY</div><h2>Find your creator.</h2></div><div class="section-actions"><a href="{{ url_for('signup') }}">Create subscriber account →</a></div></div>
+  <div class="creator-directory">
+    {% for creator in creators %}
+    <a class="directory-card" href="{{ url_for('creator_public', slug=creator.slug) }}">
+      <div class="directory-cover" {% if creator.cover_path %}style="background-image:url('{{ url_for('public_media', relpath=creator.cover_path) }}')"{% endif %}>
+        <div class="directory-avatar">{% if creator.avatar_path %}<img src="{{ url_for('public_media', relpath=creator.avatar_path) }}" alt="{{ creator.display_name }}">{% else %}{{ creator.avatar_text }}{% endif %}</div>
+      </div>
+      <div class="directory-body"><strong>{{ creator.display_name }}</strong><span>{{ creator.handle }} · {{ creator.location }}</span><p>{{ creator.bio }}</p><div class="directory-meta"><span>${{ '%.2f'|format(creator.subscription_price) }}/mo</span><span>${{ creator.token_symbol }}</span></div></div>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="section-shell creator-cta-strip">
+  <div><div class="eyebrow">FOR CREATORS</div><h2>Your profile. Your subscribers. Your boutique.</h2><p>Create your login, choose your token, publish products, reply to subscribers, send custom offers and launch live rooms from one dashboard.</p></div>
+  <a class="button" href="{{ url_for('creator_signup') }}">Open creator account</a>
+</section>
+{% endblock %}

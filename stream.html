@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}{{ stream.title }} — Live{% endblock %}
+{% block head %}<script defer src="{{ url_for('static', filename='rtc.js') }}"></script>{% endblock %}
+{% block content %}
+<section class="media-room-shell"><div class="media-room-head"><div><div class="eyebrow">{{ stream.audience|upper }} LIVE ROOM</div><h1>{{ stream.title }}</h1><p>{{ creator.display_name }} · <span class="live-state {{ stream.status }}">{{ stream.status|upper }}</span>{% if stream.price_per_minute %} · ${{ '%.2f'|format(stream.price_per_minute) }}/min{% endif %}</p></div><a class="button secondary" href="{{ url_for('creator_dashboard', slug=creator.slug) if is_host else url_for('creator_public', slug=creator.slug) }}">Exit room</a></div>
+  <section class="video-stage launch-video-stage" data-rtc-room data-room-type="stream" data-room-id="{{ stream.id }}" data-role="{{ 'host' if is_host else 'viewer' }}" data-actor="{{ actor_id }}" data-peer="{{ host_actor }}" data-signal-url="{{ url_for('stream_signal', stream_id=stream.id) }}" data-live-status-url="{{ url_for('stream_status', stream_id=stream.id) }}">
+    <video id="localVideo" autoplay muted playsinline></video><video id="remoteVideo" autoplay playsinline></video><div class="video-placeholder" id="videoPlaceholder"><img src="{{ url_for('static', filename='sp_logo.png') }}" alt=""><strong>{{ 'Camera ready' if is_host else 'Waiting for creator video…' }}</strong><span>WebRTC peer connection runs directly in the browser.</span></div>
+  </section>
+  <div class="media-controls"><button class="button" id="startRtc" type="button">{{ 'Go live' if is_host else 'Join live' }}</button><button class="button secondary" id="toggleMic" type="button">Mic</button><button class="button secondary" id="toggleCam" type="button">Camera</button>{% if is_host %}<form method="post" action="{{ url_for('stream_status', stream_id=stream.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="status" value="ended"><button class="text-button danger" type="submit">End room</button></form>{% endif %}</div><div class="rtc-status" id="rtcStatus">Ready.</div>
+</section>
+{% endblock %}

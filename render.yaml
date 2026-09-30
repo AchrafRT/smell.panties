@@ -1,0 +1,35 @@
+services:
+  - type: web
+    name: smell-panties-platform
+    runtime: python
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --bind 0.0.0.0:$PORT --workers 1 --threads 4 --timeout 120 app:app
+    healthCheckPath: /health
+    disk:
+      name: smell-panties-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: APP_STORAGE_DIR
+        value: /var/data
+      - key: MAX_UPLOAD_MB
+        value: "100"
+      - key: BILLING_MODE
+        value: live
+      - key: FOUNDER_LIMIT
+        value: "1000"
+      - key: FOUNDER_FEE
+        value: "9"
+      - key: DEFAULT_PLATFORM_FEE
+        value: "12"
+      - key: PYTHON_VERSION
+        value: 3.12.14
+      - key: SEED_DEMO_DATA
+        value: "false"

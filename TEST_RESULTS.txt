@@ -1,0 +1,37 @@
+test_cancel_then_pay_blocked (test_launch.LaunchTests.test_cancel_then_pay_blocked) ... ok
+test_checkout_page_renders_original_layout (test_launch.LaunchTests.test_checkout_page_renders_original_layout) ... ok
+test_csrf_and_redirect_validation (test_launch.LaunchTests.test_csrf_and_redirect_validation) ... ok
+test_expired_checkout_releases_once (test_launch.LaunchTests.test_expired_checkout_releases_once) ... ok
+test_failed_network_keeps_provider_and_reservation (test_launch.LaunchTests.test_failed_network_keeps_provider_and_reservation) ... ok
+test_forged_webhooks_rejected (test_launch.LaunchTests.test_forged_webhooks_rejected) ... ok
+test_health_failure_uses_503 (test_launch.LaunchTests.test_health_failure_uses_503) ... ok
+test_offer_checkout_grants_only_after_payment (test_launch.LaunchTests.test_offer_checkout_grants_only_after_payment) ... ok
+test_other_buyer_and_anonymous_cannot_read_invoice (test_launch.LaunchTests.test_other_buyer_and_anonymous_cannot_read_invoice) ... ok
+test_paid_expired_callbacks_idempotent (test_launch.LaunchTests.test_paid_expired_callbacks_idempotent) ... ok
+test_password_reset_revokes_old_session (test_launch.LaunchTests.test_password_reset_revokes_old_session) ... ok
+test_paypal_capture_and_heleket_amount (test_launch.LaunchTests.test_paypal_capture_and_heleket_amount) ... ok
+test_physical_address_adapter_and_no_shipping_for_digital (test_launch.LaunchTests.test_physical_address_adapter_and_no_shipping_for_digital) ... ok
+test_provider_amount_mismatch_never_grants (test_launch.LaunchTests.test_provider_amount_mismatch_never_grants) ... ok
+test_second_buyer_cannot_reserve_same_item (test_launch.LaunchTests.test_second_buyer_cannot_reserve_same_item) ... ok
+test_shipping_required_and_locked (test_launch.LaunchTests.test_shipping_required_and_locked) ... ok
+test_signed_heleket_callback_and_replay (test_launch.LaunchTests.test_signed_heleket_callback_and_replay) ... ok
+test_signed_stripe_webhook_rechecks_provider (test_launch.LaunchTests.test_signed_stripe_webhook_rechecks_provider) ... ok
+test_single_provider_idempotent_and_cancel_protected (test_launch.LaunchTests.test_single_provider_idempotent_and_cancel_protected) ... ok
+test_subscription_needs_payment_and_expires (test_launch.LaunchTests.test_subscription_needs_payment_and_expires) ... ok
+test_subscription_refund_revokes_access (test_launch.LaunchTests.test_subscription_refund_revokes_access) ... ok
+test_suspended_session_revoked (test_launch.LaunchTests.test_suspended_session_revoked) ... ok
+test_untouched_reservation_expires_but_provider_hold_does_not (test_launch.LaunchTests.test_untouched_reservation_expires_but_provider_hold_does_not) ... ok
+test_verified_paypal_webhook_and_invalid_signature (test_launch.LaunchTests.test_verified_paypal_webhook_and_invalid_signature) ... ok
+test_creator_can_signup_edit_publish_and_create_live (test_smoke.PlatformSmokeTests.test_creator_can_signup_edit_publish_and_create_live) ... ok
+test_fan_can_signup_subscribe_enter_private_and_message (test_smoke.PlatformSmokeTests.test_fan_can_signup_subscribe_enter_private_and_message) ... ok
+test_fan_sp_nude_wallet_and_creator_token_redemption (test_smoke.PlatformSmokeTests.test_fan_sp_nude_wallet_and_creator_token_redemption) ... ok
+test_health_and_public_profile (test_smoke.PlatformSmokeTests.test_health_and_public_profile) ... ok
+test_one_of_one_order_is_reserved_and_admin_can_fulfill (test_smoke.PlatformSmokeTests.test_one_of_one_order_is_reserved_and_admin_can_fulfill) ... ok
+test_payment_webhook_is_explicit_unconnected_boundary (test_smoke.PlatformSmokeTests.test_payment_webhook_is_explicit_unconnected_boundary) ... ok
+test_safety_report_enters_admin_queue (test_smoke.PlatformSmokeTests.test_safety_report_enters_admin_queue) ... ok
+test_seed_creator_can_be_assigned_a_login (test_smoke.PlatformSmokeTests.test_seed_creator_can_be_assigned_a_login) ... ok
+
+----------------------------------------------------------------------
+Ran 32 tests in 3.273s
+
+OK

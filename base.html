@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#070405">
+  <meta name="csrf-token" content="{{ csrf_token }}">
+  <meta name="description" content="Smell Panties — premium creator subscriptions, unique drops, private messaging and live experiences.">
+  <title>{% block title %}Smell Panties{% endblock %}</title>
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='sp_logo.png') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script defer src="{{ url_for('static', filename='app.js') }}"></script>
+  {% block head %}{% endblock %}
+</head>
+<body class="role-{{ auth_role }}">
+  {% if not adult_gate %}
+  <div class="age-gate" id="ageGate" role="dialog" aria-modal="true" aria-labelledby="ageGateTitle">
+    <div class="age-card">
+      <img src="{{ url_for('static', filename='sp_logo.png') }}" alt="Smell Panties">
+      <div class="eyebrow">ADULTS ONLY</div>
+      <h1 id="ageGateTitle">You must be 18+ to enter.</h1>
+      <p>This platform is intended only for adults. By entering, you confirm that you are at least 18 years old and legally permitted to view adult creator content in your jurisdiction.</p>
+      <form method="post" action="{{ url_for('age_check') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <input type="hidden" name="adult_confirm" value="yes">
+        <input type="hidden" name="next" value="{{ request.full_path if request.query_string else request.path }}">
+        <button class="button wide" type="submit">I am 18+ — enter</button>
+      </form>
+      <a class="age-exit" href="https://www.google.com">I am under 18 — leave</a>
+    </div>
+  </div>
+  {% endif %}
+
+  <header class="topbar launch-topbar">
+    <a class="brand-lockup" href="{{ url_for('brand_profile') }}">
+      <img src="{{ url_for('static', filename='sp_logo.png') }}" alt="Smell Panties">
+      <span>SMELL PANTIES</span>
+    </a>
+    <nav>
+      <a href="{{ url_for('brand_profile') }}#top9">Top 9</a>
+      <a href="{{ url_for('brand_profile') }}#creators">Creators</a>
+      {% if owned_creator %}<a href="{{ url_for('creator_dashboard', slug=owned_creator.slug) }}">Studio</a>{% endif %}
+      {% if auth_user and auth_user.role == 'fan' %}<a href="{{ url_for('fan_account') }}">My account</a>{% endif %}
+      {% if is_admin %}<a href="{{ url_for('admin_dashboard') }}">Admin</a>{% endif %}
+    </nav>
+    <div class="session-cluster">
+      {% if auth_role == 'guest' %}
+        <a class="header-link" href="{{ url_for('login') }}">Log in</a>
+        <a class="button compact" href="{{ url_for('signup') }}">Join as fan</a>
+      {% else %}
+        {% if auth_user %}<span class="user-chip">{{ auth_user.display_name }}</span>{% elif is_admin %}<span class="role-pill admin">ADMIN</span>{% elif is_demo %}<span class="role-pill demo">DEMO</span>{% endif %}
+        <form method="post" action="{{ url_for('logout') }}" class="logout-form"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button type="submit">Log out</button></form>
+      {% endif %}
+    </div>
+  </header>
+
+  {% if billing_mode == 'launch_free' %}
+  <div class="launch-banner"><strong>Launch access mode</strong><span>Fan subscriptions activate without charge until payment processing is connected.</span></div>
+  {% elif billing_mode == 'manual' %}
+  <div class="launch-banner"><strong>Manual billing mode</strong><span>Subscriptions and orders require administrator payment confirmation.</span></div>
+  {% endif %}
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}<div class="flash-wrap">{% for category, message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}</div>{% endif %}
+  {% endwith %}
+
+  <main>{% block content %}{% endblock %}</main>
+  <footer class="footer launch-footer">
+    <span>© {{ now_year }} Smell Panties · 18+ only</span>
+    <span>Creator subscriptions · private messaging · unique products · live rooms · <a href="{{ url_for('report_content') }}">Report content</a></span>
+  </footer>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

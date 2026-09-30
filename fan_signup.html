@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Create Subscriber Account — Smell Panties{% endblock %}
+{% block content %}
+<section class="auth-shell"><div class="auth-card">
+  <img class="auth-logo" src="{{ url_for('static', filename='sp_logo.png') }}" alt="Smell Panties">
+  <div class="eyebrow">SUBSCRIBER ACCOUNT</div><h1>Join in seconds.</h1><p>Create one account, then subscribe to any creator on the platform.</p>
+  <form method="post" class="auth-form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="next" value="{{ next_url }}">
+    <label><span>Display name</span><input name="display_name" maxlength="80" required></label>
+    <label><span>Email</span><input type="email" name="email" autocomplete="email" required></label>
+    <label><span>Password</span><input type="password" name="password" minlength="8" autocomplete="new-password" required></label>
+    <label><span>Confirm password</span><input type="password" name="password_confirm" minlength="8" autocomplete="new-password" required></label>
+    <label class="check-row"><input type="checkbox" name="adult_confirm" value="yes" required><span>I confirm that I am at least 18 years old.</span></label>
+    <button class="button wide" type="submit">Create subscriber account</button>
+  </form>
+  <div class="auth-links"><a href="{{ url_for('login', next=next_url) }}">Already have an account? Log in</a></div>
+</div></section>
+{% endblock %}

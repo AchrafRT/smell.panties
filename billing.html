@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Secure checkout — Smell Panties{% endblock %}
+{% block content %}
+<section class="checkout-shell"><div class="checkout-card order-card">
+<div class="eyebrow">SECURE CHECKOUT</div><h1>{{ invoice.title }}</h1>
+<div class="order-summary"><div><span>Total</span><strong>{{ '%.2f'|format(invoice.total/100) }} {{ invoice.currency }}</strong></div><div><span>Status</span><strong>{{ invoice.status|upper }}</strong></div></div>
+{% if invoice.kind == 'subscription' %}<p>One payment gives 30 days of access. There is no automatic renewal.</p>{% endif %}
+{% if invoice.status == 'pending' %}
+{% if needs_address and not invoice.provider %}<form method="post" action="{{ url_for('billing.shipping_address',iid=invoice.id) }}" class="form-grid"><input type="hidden" name="csrf_token" value="{{ csrf_token }}">{% for name,label in [('recipient','Recipient'),('street','Street address'),('city','City'),('region','Province / state'),('postal_code','Postal code'),('country','Country code (CA, US, etc.)')] %}<label><span>{{ label }}</span><input name="{{ name }}" value="{{ address.get(name,'') }}" maxlength="200" required></label>{% endfor %}<button class="button secondary wide" type="submit">Save shipping address</button></form>{% endif %}
+{% for name, enabled in providers.items() %}{% if enabled and (not invoice.provider or invoice.provider == name) %}<form method="post" action="{{ url_for('billing.pay', iid=invoice.id, provider=name) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button class="button wide" type="submit">Pay with {{ name|capitalize }}</button></form>{% endif %}{% endfor %}
+{% if not providers.values()|select|list %}<p>Checkout is not available yet. Please contact the site owner.</p>{% endif %}
+{% endif %}
+{% if invoice.external_id %}<form method="post" action="{{ url_for('billing.check', iid=invoice.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button class="button secondary wide" type="submit">{% if invoice.provider == 'paypal' and invoice.status == 'pending' %}Complete approved PayPal payment{% else %}Check payment status{% endif %}</button></form>{% endif %}
+{% if invoice.status == 'paid' %}<p>Payment confirmed. Your purchase is available in your account.</p>{% elif invoice.status == 'review' %}<p>This payment needs owner review. Please contact support with reference {{ invoice.id }}.</p>{% elif invoice.status == 'expired' %}<p>This checkout has expired. You can start a new purchase.</p>{% endif %}
+<a class="button secondary wide" href="{{ url_for('fan_account') }}">My account</a>
+{% if invoice.kind == 'order' %}<a href="{{ url_for('order_status', order_id=invoice.target_id) }}">View order</a>{% endif %}
+</div></section>
+{% endblock %}
