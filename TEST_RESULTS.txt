@@ -1,3 +1,5 @@
+test_fresh_storage_reseeds_without_old_accounts (test_free_deployment.FreeDeploymentTests.test_fresh_storage_reseeds_without_old_accounts) ... ok
+test_render_free_startup_owner_login_and_payment_block (test_free_deployment.FreeDeploymentTests.test_render_free_startup_owner_login_and_payment_block) ... ok
 test_cancel_then_pay_blocked (test_launch.LaunchTests.test_cancel_then_pay_blocked) ... ok
 test_checkout_page_renders_original_layout (test_launch.LaunchTests.test_checkout_page_renders_original_layout) ... ok
 test_csrf_and_redirect_validation (test_launch.LaunchTests.test_csrf_and_redirect_validation) ... ok
@@ -32,6 +34,6 @@ test_safety_report_enters_admin_queue (test_smoke.PlatformSmokeTests.test_safety
 test_seed_creator_can_be_assigned_a_login (test_smoke.PlatformSmokeTests.test_seed_creator_can_be_assigned_a_login) ... ok
 
 ----------------------------------------------------------------------
-Ran 32 tests in 3.273s
+Ran 34 tests in 4.520s
 
 OK

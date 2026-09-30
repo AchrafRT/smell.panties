@@ -11,6 +11,8 @@ os.environ["COOKIE_SECURE"] = "false"
 os.environ["BILLING_MODE"] = "launch_free"
 os.environ["SEED_DEMO_DATA"] = "true"
 
+os.environ["FREE_RENDER_PREVIEW"] = "false"  # Test adapters only; never used by the deployed blueprint.
+
 import app as platform  # noqa: E402
 
 

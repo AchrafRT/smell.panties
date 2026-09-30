@@ -6,6 +6,7 @@ import re
 import secrets
 import sqlite3
 import time
+import tempfile
 from datetime import datetime, timedelta, timezone
 from functools import wraps
 from pathlib import Path
@@ -46,13 +47,11 @@ def load_local_env(path: Path):
 load_local_env(ROOT / ".env")
 
 SEED_PLATFORM_FILE = ROOT / "seed_data" / "platform.json"
-STORAGE_ROOT = Path(os.getenv("APP_STORAGE_DIR", "").strip() or ROOT).expanduser()
-if os.getenv("RENDER") and not os.getenv("APP_STORAGE_DIR"):
-    raise RuntimeError("Set APP_STORAGE_DIR=/var/data and attach a persistent disk at /var/data in Render.")
+STORAGE_ROOT = Path(os.getenv("APP_STORAGE_DIR", "").strip() or (Path(tempfile.gettempdir()) / "smell-panties-preview")).expanduser()
 try:
     STORAGE_ROOT.mkdir(parents=True, exist_ok=True)
 except OSError as exc:
-    raise RuntimeError("Storage is not writable. Attach the Render persistent disk at /var/data, then redeploy.") from exc
+    raise RuntimeError("Storage is not writable. Set APP_STORAGE_DIR=/tmp/smell-panties-preview for the no-disk preview.") from exc
 DB_PATH = STORAGE_ROOT / "platform.sqlite3"
 UPLOAD_ROOT = STORAGE_ROOT / "uploads"
 UPLOAD_ROOT.mkdir(parents=True, exist_ok=True)
@@ -76,7 +75,9 @@ app.config.update(
 
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "").strip()
 DEMO_PASSWORD = os.getenv("DEMO_PASSWORD", "").strip()
-BILLING_MODE = os.getenv("BILLING_MODE", "live").strip().lower()
+BILLING_MODE = os.getenv("BILLING_MODE", "launch_free").strip().lower()
+if os.getenv("FREE_RENDER_PREVIEW", "true").lower() == "true":
+    BILLING_MODE = "launch_free"
 if BILLING_MODE not in {"launch_free", "manual", "live"}:
     BILLING_MODE = "manual"
 if os.getenv("RENDER") and len(ADMIN_PASSWORD) < 12:
@@ -805,6 +806,7 @@ def inject_globals():
         "owned_creator": owned,
         "now_year": datetime.now().year,
         "billing_mode": BILLING_MODE,
+        "temporary_preview": os.getenv("FREE_RENDER_PREVIEW", "true").lower() == "true",
         "can_manage_creator": can_manage_creator,
         "adult_gate": bool(session.get("adult_gate") or (user and user["adult_confirmed"])),
     }
@@ -2020,6 +2022,7 @@ def health():
         "database": database,
         "storage": str(STORAGE_ROOT),
         "billing_mode": BILLING_MODE,
+        "temporary_preview": os.getenv("FREE_RENDER_PREVIEW", "true").lower() == "true",
         "admin_configured": bool(ADMIN_PASSWORD),
     }, (200 if database == "ok" and ADMIN_PASSWORD else 503)
 

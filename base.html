@@ -54,7 +54,9 @@
     </div>
   </header>
 
-  {% if billing_mode == 'launch_free' %}
+  {% if temporary_preview %}
+  <div class="launch-banner"><strong>Temporary preview</strong><span>Accounts, orders and uploads reset when the free service restarts or sleeps. No real payments.</span></div>
+  {% elif billing_mode == 'launch_free' %}
   <div class="launch-banner"><strong>Launch access mode</strong><span>Fan subscriptions activate without charge until payment processing is connected.</span></div>
   {% elif billing_mode == 'manual' %}
   <div class="launch-banner"><strong>Manual billing mode</strong><span>Subscriptions and orders require administrator payment confirmation.</span></div>

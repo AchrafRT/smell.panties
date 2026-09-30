@@ -15,6 +15,8 @@ class PaymentError(Exception): pass
 
 
 def configured():
+    if os.getenv("FREE_RENDER_PREVIEW", "true").lower() == "true":
+        return {"stripe":False,"paypal":False,"heleket":False}
     required={'stripe':['STRIPE_SECRET_KEY','STRIPE_WEBHOOK_SECRET'],
               'paypal':['PAYPAL_CLIENT_ID','PAYPAL_CLIENT_SECRET','PAYPAL_WEBHOOK_ID'],
               'heleket':['HELEKET_MERCHANT_ID','HELEKET_API_KEY']}
