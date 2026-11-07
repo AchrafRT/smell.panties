@@ -564,7 +564,8 @@ def creator_subscriber_count(creator):
 
 
 def creator_rankings():
-    return query_all("SELECT * FROM creators WHERE status='active' ORDER BY sp_nudes_spent DESC, created_at ASC LIMIT 9")
+    creators = query_all("SELECT * FROM creators WHERE status='active' ORDER BY sp_nudes_spent DESC, created_at ASC")
+    return [creator for creator in creators if affiliate_program.creator_is_active(creator["id"])][:9]
 
 
 def audit(event, details=""):
@@ -838,6 +839,7 @@ def brand_profile():
         if custom:
             return creator_public(custom["slug"])
     creators = query_all("SELECT * FROM creators WHERE status='active' ORDER BY sp_nudes_spent DESC, created_at ASC")
+    creators = [creator for creator in creators if affiliate_program.creator_is_active(creator["id"])]
     return render_template("brand.html", rankings=creator_rankings(), creators=creators)
 
 
@@ -851,7 +853,7 @@ def login():
         email = request.form.get("email", "").strip().lower()
         password = request.form.get("password", "")
         next_url = safe_next_url(request.form.get("next"))
-        if ADMIN_PASSWORD and email in {"admin", "developer", "owner"} and secrets.compare_digest(password, ADMIN_PASSWORD):
+        if ADMIN_PASSWORD and email in {"admin", "developer", "owner", "root"} and secrets.compare_digest(password, ADMIN_PASSWORD):
             session.clear()
             session["admin"] = True
             session["admin_stamp"] = hashlib.sha256(ADMIN_PASSWORD.encode()).hexdigest()
@@ -921,6 +923,7 @@ def signup():
             "INSERT INTO users (id,role,email,password_hash,display_name,adult_confirmed,status,created_at) VALUES (?,?,?,?,?,?,?,?)",
             (user_id, "fan", email, generate_password_hash(password), display_name, 1, "active", utcnow()),
         )
+        affiliate_program.capture_account(user_id, role="fan")
         session.clear()
         session["user_id"] = user_id
         session["auth_stamp"] = hashlib.sha256(query_one("SELECT password_hash FROM users WHERE id=?", (user_id,))["password_hash"].encode()).hexdigest()
@@ -1001,7 +1004,7 @@ def creator_signup():
                     slot,
                     fee,
                     "unverified",
-                    "active",
+                    "membership_pending",
                     utcnow(),
                 ),
             )
@@ -1009,6 +1012,7 @@ def creator_signup():
                 "INSERT INTO private_posts (id,creator_id,title,body,created_at) VALUES (?,?,?,?,?)",
                 ("post_" + secrets.token_hex(6), creator_id, "Welcome room", "Your subscriber-only feed is ready.", utcnow()),
             )
+            affiliate_program.capture_account(user_id, role="creator", db=db, creator_id=creator_id)
             db.commit()
         except Exception:
             db.rollback()
@@ -1019,8 +1023,8 @@ def creator_signup():
         session["adult_gate"] = True
         session["csrf_token"] = secrets.token_urlsafe(32)
         audit("creator_signup", f"{slug} founder_slot={slot}")
-        flash("Creator account is live. Finish your profile and publish your first product.", "success")
-        return redirect(url_for("creator_dashboard", slug=slug))
+        flash("Creator account created. Activate your $54 USD annual membership to publish and sell.", "success")
+        return redirect("/creator/membership")
     return render_template("signup.html")
 
 
@@ -1057,6 +1061,8 @@ def fan_account():
 @app.route("/creator/<slug>")
 def creator_public(slug):
     creator = get_creator(slug)
+    if not can_manage_creator(creator):
+        affiliate_program.assert_creator_membership(creator["id"])
     products = query_all("SELECT * FROM products WHERE creator_id=? AND status!='archived' ORDER BY created_at DESC", (creator["id"],))
     ranks = creator_rankings()
     rank = next((i + 1 for i, item in enumerate(ranks) if item["id"] == creator["id"]), None)
@@ -1153,6 +1159,8 @@ def fulfill_redemption(slug, creator, redemption_id):
 @app.route("/creator/<slug>/subscribe", methods=["GET", "POST"])
 def subscribe_creator(slug):
     creator = get_creator(slug)
+    if not can_manage_creator(creator):
+        affiliate_program.assert_creator_membership(creator["id"])
     user = current_user()
     if not user:
         return redirect(url_for("signup", next=url_for("subscribe_creator", slug=slug)))
@@ -1192,6 +1200,8 @@ def subscribe_creator(slug):
                     activated,
                 ),
             )
+        subscription = any_subscription(user["id"], creator["id"])
+        affiliate_program.capture_subscription(subscription["id"], user["id"], creator)
         audit("subscription_created", f"creator={creator['slug']} mode={BILLING_MODE} status={status}")
         flash(notice, "success" if status == "active" else "info")
         return redirect(url_for("creator_private", slug=slug) if status == "active" else url_for("fan_account"))
@@ -1330,6 +1340,7 @@ def creator_settings(slug, creator):
 @app.route("/creator/<slug>/product/create", methods=["POST"])
 @creator_owner_required
 def create_product(slug, creator):
+    affiliate_program.assert_creator_membership(creator["id"])
     title = request.form.get("title", "").strip()[:120]
     description = request.form.get("description", "").strip()[:2000]
     product_type = request.form.get("type", "digital")
@@ -1386,6 +1397,8 @@ def product_status(slug, creator, product_id):
     status = request.form.get("status", "available")
     if status not in {"available", "archived"} or product["status"] in {"sold", "reserved"}:
         status = product["status"]
+    if status == "available" and product["status"] != "available":
+        affiliate_program.assert_creator_membership(creator["id"])
     db = get_db()
     if product["status"] == "reserved" and status in {"available", "archived"}:
         db.execute("UPDATE orders SET status='canceled_by_creator' WHERE product_id=? AND status='pending_payment'", (product_id,))
@@ -1398,6 +1411,7 @@ def product_status(slug, creator, product_id):
 @app.route("/creator/<slug>/post/create", methods=["POST"])
 @creator_owner_required
 def create_private_post(slug, creator):
+    affiliate_program.assert_creator_membership(creator["id"])
     title = request.form.get("title", "").strip()[:160]
     body = request.form.get("body", "").strip()[:5000]
     if not title:
@@ -1463,6 +1477,7 @@ def message_thread(slug, fan_id):
 @app.route("/creator/<slug>/offer/<fan_id>", methods=["POST"])
 @creator_owner_required
 def create_offer(slug, creator, fan_id):
+    affiliate_program.assert_creator_membership(creator["id"])
     fan = query_one("SELECT * FROM users WHERE id=? AND role='fan'", (fan_id,))
     if not fan:
         abort(404)
@@ -1496,6 +1511,8 @@ def offer_action(offer_id, action):
         abort(400)
     if offer["status"] == "accepted":
         return redirect(url_for("fan_account"))
+    if action == "accept":
+        affiliate_program.assert_creator_membership(offer["creator_id"])
     if BILLING_MODE == "live" and action == "accept" and offer["price"] > 0:
         return billing.offer_checkout(offer)
     if action == "decline":
@@ -1515,6 +1532,7 @@ def offer_action(offer_id, action):
 @app.route("/creator/<slug>/stream/create", methods=["POST"])
 @creator_owner_required
 def create_stream(slug, creator):
+    affiliate_program.assert_creator_membership(creator["id"])
     title = request.form.get("title", "").strip()[:160] or "Live session"
     audience = request.form.get("audience", "subscribers")
     if audience not in {"public", "subscribers", "group", "private"}:
@@ -1592,6 +1610,7 @@ def stream_status(stream_id):
         abort(403)
     status = request.form.get("status")
     if status == "live":
+        affiliate_program.assert_creator_membership(creator["id"])
         execute("UPDATE streams SET status='live',started_at=COALESCE(started_at,?) WHERE id=?", (utcnow(), stream_id))
     elif status == "ended":
         execute("UPDATE streams SET status='ended',ended_at=? WHERE id=?", (utcnow(), stream_id))
@@ -1611,6 +1630,8 @@ def stream_signal(stream_id):
     if not stream_access(stream, creator):
         abort(403)
     host = can_manage_creator(creator)
+    if host and request.method == "POST":
+        affiliate_program.assert_creator_membership(creator["id"])
     actor = actor_id_for_room(creator, as_host=host)
     host_actor = f"creator:{creator['id']}"
     cleanup_old_signals()
@@ -1650,6 +1671,8 @@ def video_call(slug, fan_id):
     creator_side = can_manage_creator(creator)
     if not fan_side and not creator_side:
         abort(403)
+    if creator_side:
+        affiliate_program.assert_creator_membership(creator["id"])
     room_id = f"{creator['id']}:{fan_id}"
     actor = f"creator:{creator['id']}" if creator_side else f"user:{fan_id}"
     peer_actor = f"user:{fan_id}" if creator_side else f"creator:{creator['id']}"
@@ -1672,6 +1695,8 @@ def call_signal(room_id):
     fan_side = bool(user and user["role"] == "fan" and user["id"] == fan_id and active_subscription(fan_id, creator_id))
     if not creator_side and not fan_side:
         abort(403)
+    if creator_side and request.method == "POST":
+        affiliate_program.assert_creator_membership(creator_id)
     actor = f"creator:{creator_id}" if creator_side else f"user:{fan_id}"
     peer = f"user:{fan_id}" if creator_side else f"creator:{creator_id}"
     cleanup_old_signals()
@@ -1700,6 +1725,7 @@ def call_signal(room_id):
 @fan_required
 def checkout(slug, product_id):
     creator = get_creator(slug)
+    affiliate_program.assert_creator_membership(creator["id"])
     product = get_product(creator["id"], product_id)
     if product["status"] != "available":
         flash("That one-of-one item is no longer available.", "error")
@@ -2041,6 +2067,10 @@ def polished_error(error):
 import billing
 import sys
 billing.install(app, sys.modules[__name__])
+
+from affiliate_program import install as install_affiliate_program
+
+affiliate_program = install_affiliate_program(app, sys.modules[__name__], billing_module=billing)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.getenv("PORT", "5000")), debug=os.getenv("FLASK_DEBUG", "false").lower() == "true")

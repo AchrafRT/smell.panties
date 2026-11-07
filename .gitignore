@@ -1,0 +1,23 @@
+# Local secrets, session keys and runtime state
+.env
+.env.*
+!.env.example
+.session-key
+demo-data/
+data/
+uploads/
+*.sqlite
+*.sqlite3
+*.sqlite3-*
+*.db
+*.db-*
+
+# Python environments and test output
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+.DS_Store

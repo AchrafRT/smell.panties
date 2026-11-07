@@ -1,6 +1,12 @@
 {% extends "base.html" %}
 {% block title %}{{ creator.display_name }} Studio — Smell Panties{% endblock %}
 {% block content %}
+<section class="section-shell creator-cta-strip" id="creator-membership">
+  <div><div class="eyebrow">CREATOR MEMBERSHIP &amp; AFFILIATES</div><h2>Your membership. Your promotion preferences.</h2>
+  <p>A $54 {{ affiliate_program_settings.currency }} annual membership is required to publish and sell. Choose whether affiliates may promote your subscriptions for a recurring 3% commission deducted from your proceeds.</p></div>
+  <a class="button" href="/creator/membership">Manage membership &amp; affiliates</a>
+</section>
+
 <section class="dashboard-shell creator-studio">
   <div class="dashboard-title"><div><div class="eyebrow">CREATOR STUDIO</div><h1>{{ creator.display_name }}</h1><p>{{ creator.business_email }} · Founder slot #{{ creator.founder_slot or '—' }} · {{ '%.0f'|format(creator.platform_fee_percent) }}% platform fee</p></div><div class="hero-actions"><a class="button" href="{{ url_for('creator_public', slug=creator.slug) }}">View public profile</a><a class="button secondary" href="{{ url_for('creator_private', slug=creator.slug) }}">View private room</a></div></div>
   {% if creator.identity_status == 'unverified' %}<div class="studio-warning"><strong>Identity/age verification not connected.</strong><span>Your account is functional, but a real adult platform should connect a compliant identity and age-verification provider before accepting paid creator activity.</span></div>{% endif %}

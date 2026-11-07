@@ -38,7 +38,7 @@
     </a>
     <nav>
       <a href="{{ url_for('brand_profile') }}#top9">Top 9</a>
-      <a href="{{ url_for('brand_profile') }}#creators">Creators</a>
+      <a href="{{ url_for('brand_profile') }}#creators">Creators</a><a href="/affiliate">Affiliates</a>
       {% if owned_creator %}<a href="{{ url_for('creator_dashboard', slug=owned_creator.slug) }}">Studio</a>{% endif %}
       {% if auth_user and auth_user.role == 'fan' %}<a href="{{ url_for('fan_account') }}">My account</a>{% endif %}
       {% if is_admin %}<a href="{{ url_for('admin_dashboard') }}">Admin</a>{% endif %}

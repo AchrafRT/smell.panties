@@ -49,4 +49,16 @@
   <div><div class="eyebrow">FOR CREATORS</div><h2>Your profile. Your subscribers. Your boutique.</h2><p>Create your login, choose your token, publish products, reply to subscribers, send custom offers and launch live rooms from one dashboard.</p></div>
   <a class="button" href="{{ url_for('creator_signup') }}">Open creator account</a>
 </section>
+
+<section class="section-shell creator-cta-strip" id="affiliates">
+  <div>
+    <div class="eyebrow">AFFILIATE PROGRAM</div>
+    <h2>Make an introduction. Share in the growth.</h2>
+    <p>Refer a creator to the $54 {{ affiliate_program_settings.currency }} annual membership and earn $27 on each eligible paid renewal. Promote participating creator subscriptions and earn a recurring 3% referral commission.</p>
+    <p>Creators choose whether affiliates may promote their profile. Tips, products and individual purchases are excluded.</p>
+    {% if billing_mode != 'live' %}<p class="muted">Program preview. Payment collection, automatic renewals and transfers are not connected.</p>{% else %}<p class="muted">Commissions follow verified payments. Automatic renewals and affiliate transfers require their payment-service connections.</p>{% endif %}
+  </div>
+  <a class="button" href="/affiliate">Open affiliate portal</a>
+</section>
+
 {% endblock %}

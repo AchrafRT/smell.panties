@@ -80,6 +80,9 @@ def create_invoice(kind, target, buyer, title, amount, currency):
             db.execute('INSERT INTO billing_invoices(id,kind,target_id,buyer_id,title,total,currency,created) VALUES(?,?,?,?,?,?,?,?)',
                        (iid, kind, target, buyer, title, minor(amount), currency, int(time.time())))
             row = db.execute('SELECT * FROM billing_invoices WHERE id=?', (iid,)).fetchone()
+            runtime = getattr(platform, 'affiliate_program', None)
+            if runtime is not None:
+                runtime.snapshot_invoice(db, row)
         db.commit()
         return row
     except BaseException:
@@ -102,6 +105,7 @@ def order_shipping(order):
 def subscription_checkout(creator, user):
     if platform.active_subscription(user['id'], creator['id']):
         return redirect(url_for('creator_private', slug=creator['slug']))
+    platform.affiliate_program.assert_creator_membership(creator['id'])
     sub = platform.any_subscription(user['id'], creator['id'])
     if not sub:
         sid = 'sub_' + secrets.token_hex(8)
@@ -112,6 +116,7 @@ def subscription_checkout(creator, user):
         except sqlite3.IntegrityError:
             pass
         sub = platform.any_subscription(user['id'], creator['id'])
+    platform.affiliate_program.capture_subscription(sub['id'], user['id'], creator)
     invoice = create_invoice('subscription', sub['id'], user['id'], '30-day access: ' + creator['display_name'], creator['subscription_price'], creator['subscription_currency'])
     return redirect(url_for('billing.invoice_page', iid=invoice['id']))
 
@@ -119,6 +124,7 @@ def subscription_checkout(creator, user):
 def offer_checkout(offer):
     if offer['status'] not in {'open', 'accepted_payment_pending'}:
         abort(409)
+    platform.affiliate_program.assert_creator_membership(offer['creator_id'])
     invoice = create_invoice('offer', offer['id'], offer['fan_user_id'], offer['title'], offer['price'], offer['currency'])
     platform.execute("UPDATE offers SET status='accepted_payment_pending',updated_at=? WHERE id=?", (platform.utcnow(), offer['id']))
     return redirect(url_for('billing.invoice_page', iid=invoice['id']))
@@ -183,6 +189,9 @@ def apply_result(iid, state, reference):
             elif state == 'review':
                 # Revoke only the grant linked to this invoice, not a newer renewal.
                 db.execute("UPDATE subscriptions SET status='pending',billing_state='payment_review' WHERE id=? AND activated_at=?", (row['target_id'], row['paid_at']))
+        elif row['kind'] == 'creator_membership':
+            # The runtime applies the annual entitlement in the shared transaction below.
+            pass
         elif row['kind'] == 'offer':
             db.execute('UPDATE offers SET status=?,updated_at=? WHERE id=?', ('accepted' if state == 'paid' else 'payment_review' if state == 'review' else 'open', platform.utcnow(), row['target_id']))
         paid_at = None
@@ -192,6 +201,7 @@ def apply_result(iid, state, reference):
             paid_at = platform.utcnow()
         db.execute('UPDATE billing_invoices SET status=?,reference=?,granted=?,paid_at=COALESCE(paid_at,?) WHERE id=?', (state, reference, int(state=='paid'), paid_at, iid))
         db.execute('INSERT INTO audit_log(actor,event,details,created_at) VALUES(?,?,?,?)', ('payment-provider','payment_'+state,iid,platform.utcnow()))
+        platform.affiliate_program.record_invoice_result(db, row, state, reference)
         db.commit()
     except BaseException:
         db.rollback()
@@ -224,9 +234,29 @@ def shipping_address(iid):
     return redirect(url_for('billing.invoice_page',iid=iid))
 
 
+def assert_invoice_creator_membership(invoice):
+    # Recheck at payment time: an invoice may predate the creator's membership expiry.
+    sources = {
+        'subscription': ('subscriptions', 'id'),
+        'order': ('orders', 'order_id'),
+        'offer': ('offers', 'id'),
+    }
+    source = sources.get(invoice['kind'])
+    if source is None:
+        return  # Membership renewal must remain payable without an active membership.
+    table, identifier = source
+    row = platform.query_one(f'SELECT creator_id FROM {table} WHERE {identifier}=?', (invoice['target_id'],))
+    if not row:
+        abort(409, description='This checkout no longer has an available creator.')
+    platform.affiliate_program.assert_creator_membership(row['creator_id'])
+
+
 @bp.route('/billing/<iid>/pay/<provider>', methods=['POST'])
 def pay(iid, provider):
     row = get_invoice(iid)
+    if row['status'] == 'pending':
+        platform.affiliate_program.validate_checkout_invoice(row)
+        assert_invoice_creator_membership(row)
     if not payments.configured().get(provider):
         abort(400, description='This payment method is not configured.')
     base = (os.getenv('PUBLIC_BASE_URL') or os.getenv('RENDER_EXTERNAL_URL') or '').rstrip('/')
