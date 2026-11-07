@@ -1,3 +1,11 @@
+## Affiliate development branch — November 7, 2026
+
+The new password-protected affiliate and owner portals, $54 annual creator membership, 50% creator membership commission, and 3% fan subscription commission are documented in [AFFILIATE_IMPLEMENTATION.md](AFFILIATE_IMPLEMENTATION.md). Run `python demo_app.py` for an isolated interactive demo. This branch has not been deployed to the production domain. Automatic recurring charges and affiliate bank transfers remain unconnected.
+
+The original preview instructions below describe the inherited September source snapshot; do not use them to overwrite the newer live Linode deployment.
+
+---
+
 # Smell Panties — Render Free, no disk
 
 This ZIP preserves your original design and runs as a free Render Web Service without attaching a disk. It is a temporary preview, not a persistent customer store. Accounts, orders, messages and uploads are stored locally and are lost when Render restarts, redeploys or spins down the service. Real payments are disabled even if provider keys are accidentally supplied.

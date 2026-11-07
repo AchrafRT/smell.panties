@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% block title %}Creator Onboarding — Smell Panties{% endblock %}
 {% block content %}
+<section class="section-shell"><div class="panel"><div class="eyebrow">ANNUAL CREATOR MEMBERSHIP</div><h2>$54 {{ affiliate_program_settings.currency }} per year.</h2><p>Create your account, then activate the annual creator membership to publish your profile, post content and sell. Your account and billing settings remain accessible while payment is pending.</p><p class="muted">Each verified membership payment provides 12 months of access. Automatic renewal is not connected.</p></div></section>
+
 <section class="creator-onboard-shell">
   <div class="onboard-copy"><div class="eyebrow">CREATOR ONBOARDING</div><h1>Open your studio.</h1><p>Your account creates a public profile, private subscriber room, boutique, creator inbox, live-room tools, a unique token identity and a @smellpanties.com internal business identity.</p><div class="founder-callout"><strong>First {{ brand.founder_limit or 1000 }} creators</strong><span>Founder fee metadata is locked to the account at onboarding.</span></div></div>
   <form method="post" class="panel onboard-form">

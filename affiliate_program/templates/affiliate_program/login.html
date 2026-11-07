@@ -1,0 +1,35 @@
+{% extends 'affiliate_program/base.html' %}
+{% block content %}
+<div class="login-layout">
+  <section class="login-story" aria-labelledby="login-story-title">
+    <a class="brand" href="/"><span class="brand-mark">sp<span>.</span></span><span class="brand-wordmark">SMELL PANTIES<span>A LITTLE INTRODUCTION GOES A LONG WAY</span></span></a>
+    <div class="login-story-content">
+      <span class="eyebrow light">{% if area == 'admin' %}THE OWNER WORKSPACE{% else %}THE AFFILIATE PROGRAM{% endif %}</span>
+      <h1 id="login-story-title">{% if area == 'admin' %}A clearer view.<br>A stronger <em>program.</em>{% else %}Make connections.<br>Build something<br><em>that lasts.</em>{% endif %}</h1>
+      <p>{% if area == 'admin' %}One workspace for your affiliates, creator memberships, referral activity and commission ledger.{% else %}Introduce creators and fans to Smell Panties. Earn recurring commissions from the relationships you bring.{% endif %}</p>
+      <div class="login-rate-cards"><div><span>50<span>%</span></span><p>of referred creator<br>membership payments</p></div><div><span>3<span>%</span></span><p>of eligible referred<br>fan subscriptions</p></div></div>
+    </div>
+    <div class="login-story-footer"><span>Simple terms. Clear attribution.</span><span class="decorative-stars" aria-hidden="true">✦ &nbsp; ✦ &nbsp; ✦</span></div>
+  </section>
+  <section class="login-form-section" aria-labelledby="login-title">
+    <div class="login-form-wrap">
+      <a class="back-link" href="/">← Back to website</a>
+      <div class="login-lock">{{ icon('lock') }}</div>
+      <span class="eyebrow">{% if area == 'admin' %}COMPANY ACCESS{% else %}PARTNER ACCESS{% endif %}</span>
+      <h2 id="login-title">Welcome back.</h2>
+      <p class="login-subtitle">Sign in to your {% if area == 'admin' %}owner{% else %}affiliate{% endif %} workspace.</p>
+      {% if demo %}<div class="notice notice-demo">{{ icon('info') }}<div><strong>Development demo — no real charges or payouts.</strong><span>Use the demo account below to explore the program.</span></div></div>{% endif %}
+      <form method="post" class="login-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <input type="hidden" name="next" value="{{ next_url|default('', true) }}">
+        <div class="field"><label for="username">Username</label><input id="username" name="username" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="Enter your username" required autofocus maxlength="80"></div>
+        <div class="field"><label for="password">Password</label><div class="password-field"><input id="password" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" required><button type="button" class="password-toggle" data-password-toggle="password" aria-label="Show password" aria-pressed="false">{{ icon('eye') }}</button></div></div>
+        <button class="button button-primary button-full" type="submit">Sign in {{ icon('arrow') }}</button>
+      </form>
+      {% if demo %}<div class="demo-credentials"><span class="eyebrow">DEMO ACCOUNTS</span>{% if area == 'admin' %}<div><span>Owner</span><code>root / admin</code></div>{% else %}<div><span>Affiliate 01</span><code>affiliate1 / admin</code></div><div><span>Affiliate 02</span><code>affiliate2 / admin</code></div>{% endif %}<p>These credentials apply to the development demo only.</p></div>{% endif %}
+      <div class="login-switch">{% if area == 'admin' %}Looking for your affiliate account? <a href="/affiliate">Affiliate sign in {{ icon('arrow') }}</a>{% else %}Managing the company? <a href="/admin">Owner sign in {{ icon('arrow') }}</a>{% endif %}</div>
+      <p class="login-fineprint">{{ icon('shield') }} Account access is password protected.</p>
+    </div>
+  </section>
+</div>
+{% endblock %}
